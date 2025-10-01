@@ -75,8 +75,24 @@ st.markdown("""
 # -----------------------------
 # Business Partners
 # -----------------------------
-BASE_DIR = Path(__file__).resolve().parent        # always safe
-ASSETS = BASE_DIR / "images"
+import streamlit as st
+from pathlib import Path
+from PIL import Image, UnidentifiedImageError
+
+# ensure BASE_DIR is defined (safe default)
+BASE_DIR = Path(__file__).resolve().parent
+ASSETS = BASE_DIR.parent / "images"
+
+st.write("BASE_DIR:", BASE_DIR)
+st.write("ASSETS path:", ASSETS)
+st.write("ASSETS exists?:", ASSETS.exists())
+if ASSETS.exists():
+    st.write("ASSETS absolute:", ASSETS.resolve())
+    # list files in images folder
+    files = sorted([p.name for p in ASSETS.iterdir() if p.is_file()])
+    st.write("Files in images/:", files)
+else:
+    st.error("Images folder NOT found at that path. Make sure 'images/' is next to app.py and committed to Git.")
 
 partners = {
     "Zepto Corporation": "zepto.png",
@@ -87,13 +103,24 @@ partners = {
 
 cols = st.columns(len(partners))
 for col, (name, fname) in zip(cols, partners.items()):
+    img_path = (ASSETS / fname).resolve() if ASSETS.exists() else None
     col.subheader(name)
-    img_path = ASSETS / fname
-    if img_path.exists():
-        img = Image.open(img_path)     # safer than passing raw absolute path (works cross-platform)
-        col.image(img, caption=name, use_container_width=True)
+    if img_path and img_path.exists():
+        try:
+            # quick integrity check
+            img = Image.open(img_path)
+            img.verify()  # raises if file is bad
+            # reopen for display (verify() closes file)
+            img = Image.open(img_path)
+            col.image(img, caption=f"{name} — {img_path.name}", use_container_width=True)
+            col.write(f"loaded: {img_path} ({img_path.stat().st_size} bytes)")
+        except UnidentifiedImageError:
+            col.error(f"File found but not a valid image: {img_path}")
+        except Exception as e:
+            col.error(f"Error opening image {img_path}: {e}")
     else:
-        col.error(f"Image not found: {img_path}")
+        col.error(f"Image not found at: {img_path if img_path else ASSETS}")
+
 # -----------------------------
 # Market Info Section
 # -----------------------------
