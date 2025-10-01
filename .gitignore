@@ -7,8 +7,6 @@ __pycache__/
 rabbit/
 #Ignore .csv files
 company_data/*.csv
-#Ignore embeddings file
-company_data/embeddings.pkl
 #Ignore faiss_index folder
 faiss_index/
 #Ignore the image folder
