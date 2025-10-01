@@ -82,25 +82,12 @@ from PIL import Image, UnidentifiedImageError
 # ensure BASE_DIR is defined (safe default)
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS = BASE_DIR.parent / "images"
-
-st.write("BASE_DIR:", BASE_DIR)
-st.write("ASSETS path:", ASSETS)
-st.write("ASSETS exists?:", ASSETS.exists())
-if ASSETS.exists():
-    st.write("ASSETS absolute:", ASSETS.resolve())
-    # list files in images folder
-    files = sorted([p.name for p in ASSETS.iterdir() if p.is_file()])
-    st.write("Files in images/:", files)
-else:
-    st.error("Images folder NOT found at that path. Make sure 'images/' is next to app.py and committed to Git.")
-
 partners = {
     "Zepto Corporation": "zepto.png",
     "Alpha Corporation": "alpha.png",
     "Omega Solutions": "omega.png",
     "Delta Enterprises": "delta.png",
 }
-
 cols = st.columns(len(partners))
 for col, (name, fname) in zip(cols, partners.items()):
     img_path = (ASSETS / fname).resolve() if ASSETS.exists() else None
@@ -113,14 +100,12 @@ for col, (name, fname) in zip(cols, partners.items()):
             # reopen for display (verify() closes file)
             img = Image.open(img_path)
             col.image(img, caption=f"{name} — {img_path.name}", use_container_width=True)
-            col.write(f"loaded: {img_path} ({img_path.stat().st_size} bytes)")
         except UnidentifiedImageError:
             col.error(f"File found but not a valid image: {img_path}")
         except Exception as e:
             col.error(f"Error opening image {img_path}: {e}")
     else:
         col.error(f"Image not found at: {img_path if img_path else ASSETS}")
-
 # -----------------------------
 # Market Info Section
 # -----------------------------
