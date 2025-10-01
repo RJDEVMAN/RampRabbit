@@ -13,10 +13,10 @@ import ffmpeg
 # 1️⃣ Load API keys & models
 # -----------------------------
 load_dotenv()
-client = Groq(api_key=st.secrets("GROQ_API_KEY"))
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 embed_model = SentenceTransformer(
     "sentence-transformers/all-MiniLM-L6-v2",
-    use_auth_token=st.secrets("HF_TOKEN")
+    use_auth_token=st.secrets["HF_TOKEN"]
 )
 EMBEDDINGS_FILE = "company_data/embeddings.pkl"
 
