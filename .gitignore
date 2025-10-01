@@ -1,0 +1,15 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+#Ignore the virtual environment
+.env
+#Ignore Python cache files
+__pycache__/
+#Ignore virtual environment folder
+rabbit/
+#Ignore .csv files
+company_data/*.csv
+#Ignore embeddings file
+company_data/embeddings.pkl
+#Ignore faiss_index folder
+faiss_index/
+#Ignore the image folder
+image_rabbit/
